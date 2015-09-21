@@ -56,8 +56,8 @@ public class Simulator {
 				personName = requestList.get(j).getPersonName();
 				startFloor = requestList.get(j).getStartFloor();
 				destinationFloor = requestList.get(j).getDestinationFloor();
-				System.out.println("Waiting: " + personName + " Start Floor: " +
-						startFloor + " Destination: " + destinationFloor);
+				System.out.println("Waiting: " + personName + "; Start Floor: " +
+						startFloor + "; Destination: " + destinationFloor);
 			}
 		}
 		

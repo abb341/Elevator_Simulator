@@ -15,18 +15,29 @@ public class Elevator {
 		maxFloor = numFloors;
 	}
 	
-	//Accessors
+	// Accessors
+	/**
+	 * 
+	 * @return currentFloor - the floor the elevator is on
+	 */
 	public int getCurrentFloor()
 	{
 		return currentFloor;
 	}
 	
+	/**
+	 * returns an array list of the people who are on the elevator
+	 * @return peopleOnElevatorList - array list of the people on the elevator
+	 */
 	public ArrayList<Request> getPeopleOnElevatorList()
 	{
 		return peopleOnElevatorList;
 	}
 	
 	//Mutators
+	/**
+	 * Determines whether the elevator should move up or down
+	 */
 	public void move()
 	{
 		updateDirection();
@@ -41,6 +52,10 @@ public class Elevator {
 	}
 	
 	//Other Public Methods
+	/**
+	 * Unloads passengers from the elevator by removing them from the peopleOnElevatorList
+	 * @param peopleLeavingElevatorList - list of requests that are removed
+	 */
 	public void unloadPassengers(ArrayList<Request> peopleLeavingElevatorList)
 	{
 		String unloadedPassengers = "";
@@ -59,9 +74,18 @@ public class Elevator {
 	
 	public void loadPassengers(ArrayList<Request> peopleOnCurrentFloorList)
 	{
+		String loadedPassengers = "";
+		
 		//Load the Passengers
 		peopleOnElevatorList.addAll(peopleOnCurrentFloorList);
 		numPassengers = peopleOnElevatorList.size();
+		
+		//Display Information
+		for (int i = 0; i < peopleOnElevatorList.size(); i++)
+		{
+			loadedPassengers += peopleOnElevatorList.get(i).getPersonName() + " ";
+		}
+		System.out.println("Loaded on Floor " + currentFloor + ": " + loadedPassengers);
 	}
 	
 	public void display(int elevatorNumber)
