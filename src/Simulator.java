@@ -1,13 +1,28 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
+/**
+ * The Simulator class handles the logic of the simulation. It calls the different methods
+ * in Elevator and Request and ElevatorRequestReader.
+ */
 public class Simulator {
 
-	private static final int NUM_ELEVATORS = 1;
+	private static final int NUM_ELEVATORS = 2;
 	private static final int NUM_FLOORS = 5;
 
-	public static void main(String[] args) {
+	/****************************************************************************** *
+	* Name: Aaron Brown
+	* Block: G
+	* Date: September 28, 2015
+	*
+	* Program #4B: Elevator Simulator
+	* Description:
+	* 	This program simulates the behavior of a number of elevators as they respond
+	* to different requests. At each time interval, people arrive at different
+	* floors, elevators move up or down by one floor, and loads or unloads.
+	* ******************************************************************************/
+	public static void main(String[] args) 
+	{
 		Scanner user = new Scanner(System.in);
 		int maxTime;
 		ArrayList<Elevator> elevatorList = new ArrayList<Elevator>(NUM_ELEVATORS);
@@ -18,13 +33,7 @@ public class Simulator {
 		if (didOpenRequestFile)
 		{
 			//Create New Elevator Objects
-			for (int i = 0; i < NUM_ELEVATORS; i++)
-			{
-				//Note: I am subtracting 1 so that elevators can start on floor 0
-				int startFloor = (int) (Math.random() * NUM_FLOORS) + 1;
-				System.out.println("Elevator " + i + " start floor: " + startFloor);
-				elevatorList.add(new Elevator(startFloor, NUM_FLOORS));
-			}
+			elevatorList = createNewElevators(elevatorList);
 
 			System.out.println("How many time ticks would you like this simulation to run?");
 			maxTime = user.nextInt();
@@ -33,12 +42,37 @@ public class Simulator {
 			{
 				System.out.println("Time Elapsed: " + i);
 				performAlgorithm(requestList, elevatorList);
-				//performElevatorAlgorithm(elevatorList);
 			}
+			
+			// End of simulation - display the statistics
+			displayUsageStatistics(elevatorList);
 		}
 
 	}
+	
+	/**
+	 * Create new elevator objects
+	 * @param elevatorList
+	 * @return
+	 */
+	private static ArrayList<Elevator> createNewElevators(ArrayList<Elevator> elevatorList)
+	{
+		for (int i = 0; i < NUM_ELEVATORS; i++)
+		{
+			//Note: I am adding 1 so that elevators can start on floor 1
+			int startFloor = (int) (Math.random() * NUM_FLOORS) + 1;
+			System.out.println("Elevator " + i + " start floor: " + startFloor);
+			elevatorList.add(new Elevator(startFloor, NUM_FLOORS));
+		}
+		return elevatorList;
+	}
 
+	/**
+	 * Handles the logic for the simulator and displays request information
+	 * @param requestList - Array List of Requests
+	 * @param elevatorList - Array List of Elevators
+	 * 
+	 */
 	private static void performAlgorithm(ArrayList<Request> requestList,
 			ArrayList<Elevator> elevatorList)
 	{	
@@ -50,7 +84,7 @@ public class Simulator {
 		
 		if (requestList.size() > 0)
 		{
-			// Do Stuff With Request List
+			// Display Request Information
 			for (int j = 0; j < requestList.size(); j++)
 			{
 				personName = requestList.get(j).getPersonName();
@@ -159,6 +193,12 @@ public class Simulator {
 		return requestList;
 	}
 
-
+	private static void displayUsageStatistics(ArrayList<Elevator> elevatorList)
+	{
+		for (int i = 0; i < elevatorList.size(); i++)
+		{
+			elevatorList.get(i).displayUsageStatistics(i);
+		}
+	}
 
 }

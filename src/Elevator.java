@@ -1,11 +1,15 @@
 import java.util.ArrayList;
 
-
+/**
+ * This class handles the logic for the elevators. It controls the direction the elevator
+ * travels, the loading and unloading of passengers, and the usage statistics.
+ */
 public class Elevator {
 	
 	private int currentFloor;
 	private static int maxFloor;
 	private int numPassengers = 0;
+	private int numPeopleServed = 0;
 	private boolean goingUp;
 	private ArrayList<Request> peopleOnElevatorList = new ArrayList<Request>();
 	
@@ -17,7 +21,7 @@ public class Elevator {
 	
 	// Accessors
 	/**
-	 * 
+	 * Gives the currentFloor
 	 * @return currentFloor - the floor the elevator is on
 	 */
 	public int getCurrentFloor()
@@ -26,7 +30,7 @@ public class Elevator {
 	}
 	
 	/**
-	 * returns an array list of the people who are on the elevator
+	 * Returns an array list of the people who are on the elevator
 	 * @return peopleOnElevatorList - array list of the people on the elevator
 	 */
 	public ArrayList<Request> getPeopleOnElevatorList()
@@ -69,28 +73,50 @@ public class Elevator {
 		{
 			unloadedPassengers += peopleLeavingElevatorList.get(i).getPersonName() + " ";
 		}
-		System.out.println("Unloaded on Floor " + currentFloor + ": " + unloadedPassengers);
+		
+		if (unloadedPassengers.length() > 0)
+		{
+			System.out.println("Unloaded on Floor " + currentFloor + ": " + unloadedPassengers);
+		}
 	}
 	
+	/**
+	 * Loads passengers onto the elevator by adding peopleOnCurrentFloorList to the
+	 * array list - peopleOnElevatorList
+	 * @param peopleOnCurrentFloorList - an array list of people on the same floor as the elevator
+	 */
 	public void loadPassengers(ArrayList<Request> peopleOnCurrentFloorList)
 	{
 		String loadedPassengers = "";
 		
 		//Load the Passengers
 		peopleOnElevatorList.addAll(peopleOnCurrentFloorList);
+		
+		//Update Information
 		numPassengers = peopleOnElevatorList.size();
+		numPeopleServed += peopleOnCurrentFloorList.size();
 		
 		//Display Information
-		for (int i = 0; i < peopleOnElevatorList.size(); i++)
+		for (int i = 0; i < peopleOnCurrentFloorList.size(); i++)
 		{
 			loadedPassengers += peopleOnElevatorList.get(i).getPersonName() + " ";
 		}
-		System.out.println("Loaded on Floor " + currentFloor + ": " + loadedPassengers);
+		
+		if (loadedPassengers.length() > 0)
+		{
+			System.out.println("Loaded on Floor " + currentFloor + ": " + loadedPassengers);
+		}
 	}
 	
+	/**
+	 * Display the information about the elevator
+	 * @param elevatorNumber - allows user to distinguish which elevator is which
+	 */
 	public void display(int elevatorNumber)
 	{
 		System.out.println("Elevator " + elevatorNumber + ":");
+		
+		// Display Direction
 		if (goingUp)
 		{
 			System.out.println("UP");
@@ -99,29 +125,49 @@ public class Elevator {
 		{
 			System.out.println("DOWN");
 		}
+		
 		System.out.println("Moved To Floor " + currentFloor);
 		System.out.println(numPassengers + " passenger(s)");
 	}
 	
+	/**
+	 * Displays statistics at the end of the program
+	 * @param elevatorNumber - allows user to distinguish which elevator is which
+	 */
+	public void displayUsageStatistics(int elevatorNumber)
+	{
+		System.out.println("*****Elevator " + elevatorNumber + " Usage Statistics*****");
+		System.out.println("Passengers Served - " + numPeopleServed);
+	}
 	//Other Private Methods
+	/**
+	 * Increase the value of currentFloor to move up
+	 */
 	private void moveUp()
 	{
 		//Move Up
 		currentFloor++;
 	}
 	
+	/**
+	 * Decrease the value of currentFloor to move down
+	 */
 	private void moveDown()
 	{
 		//Move Down
 		currentFloor--;
 	}
 	
+	/**
+	 * Update the direction of the elevator
+	 */
 	private void updateDirection()
 	{
 		if (goingUp)
 		{
 			if (currentFloor < maxFloor)
 			{
+				// There is room to keep going up
 				goingUp = true;
 			}
 			else
