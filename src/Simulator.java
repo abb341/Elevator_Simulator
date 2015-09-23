@@ -23,8 +23,7 @@ public class Simulator {
 	* ******************************************************************************/
 	public static void main(String[] args) 
 	{
-		Scanner user = new Scanner(System.in);
-		int maxTime;
+		int maxTime = getMaxTimeFromUser();
 		ArrayList<Elevator> elevatorList = new ArrayList<Elevator>(NUM_ELEVATORS);
 		ArrayList<Request> requestList = new ArrayList<Request>();
 
@@ -34,13 +33,11 @@ public class Simulator {
 		{
 			//Create New Elevator Objects
 			elevatorList = createNewElevators(elevatorList);
-
-			System.out.println("How many time ticks would you like this simulation to run?");
-			maxTime = user.nextInt();
-
+			
+			//Simulate the Elevators
 			for (int i = 0; i < maxTime; i++)
 			{
-				System.out.println("Time Elapsed: " + i);
+				System.out.println("Time: " + i);
 				performAlgorithm(requestList, elevatorList);
 			}
 			
@@ -51,14 +48,32 @@ public class Simulator {
 	}
 	
 	/**
-	 * Create new elevator objects
-	 * @param elevatorList
-	 * @return
+	 * Gets the amount of time the simulation will run for
+	 * @return maxTime - specified by the user
 	 */
-	private static ArrayList<Elevator> createNewElevators(ArrayList<Elevator> elevatorList)
+	private static int getMaxTimeFromUser()
+	{
+		Scanner user = new Scanner(System.in);
+		int maxTime;
+		
+		System.out.println("How many time ticks would you like "
+				+ "this simulation to run?");
+		maxTime = user.nextInt();
+		
+		return maxTime;
+	}
+	
+	/**
+	 * Create new elevator objects
+	 * @param elevatorList - array list of Elevator objects
+	 * @return elevatorList - array list of Elevator objects
+	 */
+	private static ArrayList<Elevator> 
+		createNewElevators(ArrayList<Elevator> elevatorList)
 	{
 		for (int i = 0; i < NUM_ELEVATORS; i++)
 		{
+			// Choose a random floor to start on
 			//Note: I am adding 1 so that elevators can start on floor 1
 			int startFloor = (int) (Math.random() * NUM_FLOORS) + 1;
 			System.out.println("Elevator " + i + " start floor: " + startFloor);
@@ -71,7 +86,6 @@ public class Simulator {
 	 * Handles the logic for the simulator and displays request information
 	 * @param requestList - Array List of Requests
 	 * @param elevatorList - Array List of Elevators
-	 * 
 	 */
 	private static void performAlgorithm(ArrayList<Request> requestList,
 			ArrayList<Elevator> elevatorList)
@@ -90,8 +104,8 @@ public class Simulator {
 				personName = requestList.get(j).getPersonName();
 				startFloor = requestList.get(j).getStartFloor();
 				destinationFloor = requestList.get(j).getDestinationFloor();
-				System.out.println("Waiting: " + personName + "; Start Floor: " +
-						startFloor + "; Destination: " + destinationFloor);
+				System.out.println("Waiting: " + personName + " wants to go from " +
+						startFloor + " to floor " + destinationFloor);
 			}
 		}
 		
@@ -101,12 +115,11 @@ public class Simulator {
 
 	/**
 	 * Gets array of Requests and puts it into and ArrayList
-	 * @param requestList
-	 * @return
+	 * @param requestList - array list of Request objects
+	 * @return requestList - array list of Request objects
 	 */
 	private static ArrayList<Request> newRequestList(ArrayList<Request> requestList)
 	{
-		//requestList.removeAll(requestList);
 		Request[] requestArray = ElevatorRequestReader.getRequests();
 
 		for (int i = 0; i < requestArray.length; i++)
@@ -118,6 +131,12 @@ public class Simulator {
 		return requestList;
 	}
 
+	/**
+	 * Performs a majority of the logic required to simulate the elevators
+	 * @param elevatorList - array list of Elevator objects
+	 * @param requestList - array list of Request objects
+	 * @return requestList - array list of Request objects
+	 */
 	private static ArrayList<Request> performElevatorLogic(ArrayList<Elevator> elevatorList,
 			ArrayList<Request> requestList)
 	{
@@ -129,22 +148,32 @@ public class Simulator {
 		{
 			// Determine who to load and unload
 			peopleOnElevatorList = elevatorList.get(i).getPeopleOnElevatorList();
-			unloadThesePeople = findWhoToUnload(elevatorList.get(i), peopleOnElevatorList);
+			unloadThesePeople = 
+					findWhoToUnload(elevatorList.get(i), peopleOnElevatorList);
+			
 			loadThesePeople = findWhoToLoad(elevatorList.get(i), requestList);
 
 
 			//Elevator Logic
+			System.out.println("Elevator " + i + ":");
 			elevatorList.get(i).unloadPassengers(unloadThesePeople);
 			elevatorList.get(i).loadPassengers(loadThesePeople);
 			elevatorList.get(i).move();
-			elevatorList.get(i).display(i);
+			elevatorList.get(i).display();
 			
-			//UPDATE REQUEST LIST HERE
+			// Update the request list so that it contains only unanswered requests
 			requestList = updateRequests(requestList, elevatorList);
 		}
+		
 		return requestList;
 	}
 
+	/**
+	 * Finds the passengers on the elevator that want to get off on the current floor
+	 * @param elevator - Elevator object
+	 * @param peopleOnElevatorList - array list of people currently on the elevator
+	 * @return unloadThesePeople - array list of people to unload
+	 */
 	private static ArrayList<Request> findWhoToUnload(Elevator elevator,
 			ArrayList<Request> peopleOnElevatorList)
 	{
@@ -152,6 +181,7 @@ public class Simulator {
 		int elevatorFloor = elevator.getCurrentFloor();
 		int requestDestinationFloor;
 
+		// Unload requests that want to get off on the current floor
 		for (int i = 0; i < peopleOnElevatorList.size(); i++)
 		{
 			requestDestinationFloor = peopleOnElevatorList.get(i).getDestinationFloor();
@@ -164,13 +194,20 @@ public class Simulator {
 		return unloadThesePeople;
 	}
 
+	/**
+	 * Finds who is on the same floor as the elevator and loads them onto the elevator
+	 * @param elevator - Elevator object
+	 * @param requestList - array list of requests
+	 * @return loadThesePeople - array list of people who will be put in the elevator
+	 */
 	private static ArrayList<Request> findWhoToLoad(Elevator elevator,
 			ArrayList<Request> requestList)
 	{
 		ArrayList<Request> loadThesePeople = new ArrayList<Request>();
 		int elevatorFloor = elevator.getCurrentFloor();
 		int requestStartFloor;
-
+		
+		// Load all the requests that are on the same floor as the elevator
 		for (int i = 0; i < requestList.size(); i++)
 		{
 			requestStartFloor = requestList.get(i).getStartFloor();
@@ -183,18 +220,35 @@ public class Simulator {
 		return loadThesePeople;
 	}
 
+	/**
+	 * Updates the requestList with new requests
+	 * @param requestList - array list of Requests
+	 * @param elevatorList - array list of Elevators
+	 * @return requestList - array list of Requests
+	 */
 	private static ArrayList<Request> updateRequests(ArrayList<Request> requestList,
 			ArrayList<Elevator> elevatorList)
 	{
+		/* Remove all the people who got on the elevator
+		 * 
+		 * Note: the requestList is the list of requests that have
+		 * not yet been addressed by the elevator
+		 */
 		for (int i = 0; i < elevatorList.size(); i++)
 		{
 			requestList.removeAll(elevatorList.get(i).getPeopleOnElevatorList());
 		}
+		
 		return requestList;
 	}
 
+	/**
+	 * Displays the statistics about each elevator at the end of the program
+	 * @param elevatorList - the array list that contains the elevators
+	 */
 	private static void displayUsageStatistics(ArrayList<Elevator> elevatorList)
 	{
+		// Display the statistics for each elevator
 		for (int i = 0; i < elevatorList.size(); i++)
 		{
 			elevatorList.get(i).displayUsageStatistics(i);

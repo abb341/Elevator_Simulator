@@ -112,21 +112,18 @@ public class Elevator {
 	 * Display the information about the elevator
 	 * @param elevatorNumber - allows user to distinguish which elevator is which
 	 */
-	public void display(int elevatorNumber)
+	public void display()
 	{
-		System.out.println("Elevator " + elevatorNumber + ":");
-		
 		// Display Direction
 		if (goingUp)
 		{
-			System.out.println("UP");
+			System.out.println("Moved up to floor " + currentFloor);
 		}
 		else
 		{
-			System.out.println("DOWN");
+			System.out.println("Moved down to floor " + currentFloor);
 		}
 		
-		System.out.println("Moved To Floor " + currentFloor);
 		System.out.println(numPassengers + " passenger(s)");
 	}
 	
