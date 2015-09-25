@@ -92,25 +92,46 @@ public class Simulator {
 	{	
 		requestList = newRequestList(requestList);
 		
-		String personName;
-		int startFloor;
-		int destinationFloor;
-		
 		if (requestList.size() > 0)
 		{
-			// Display Request Information
-			for (int j = 0; j < requestList.size(); j++)
-			{
-				personName = requestList.get(j).getPersonName();
-				startFloor = requestList.get(j).getStartFloor();
-				destinationFloor = requestList.get(j).getDestinationFloor();
-				System.out.println("Waiting: " + personName + " wants to go from " +
-						startFloor + " to floor " + destinationFloor);
-			}
+			
+			// Display Information by FLOOR
+			displayInfoByFloor(requestList);
 		}
 		
 		// Perform Elevator Logic and Update The Request List
 		requestList = performElevatorLogic(elevatorList, requestList);
+	}
+	
+	/**
+	 * Display the requests on each floor
+	 * @param requestList - array list of requests
+	 */
+	private static void displayInfoByFloor(ArrayList<Request> requestList)
+	{
+		// this will help make the display less cluttered
+		boolean didPrintFloor = false;
+		
+		for (int i = 1; i <= NUM_FLOORS; i++)
+		{
+			for (int j = 0; j < requestList.size(); j++)
+			{
+				if (requestList.get(j).getStartFloor() == i)
+				{
+					if (!didPrintFloor)
+					{
+						System.out.println("Floor " + i);
+						didPrintFloor = true;
+					}
+					
+					System.out.println(requestList.get(j).getPersonName() +
+							" wants to go to floor " +
+							requestList.get(j).getDestinationFloor());
+				}
+			}
+			// reset didPrintFloor
+			didPrintFloor = false;
+		}
 	}
 
 	/**
