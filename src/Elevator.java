@@ -9,9 +9,13 @@ public class Elevator {
 	private int currentFloor;
 	private static int maxFloor;
 	private int numPassengers = 0;
-	private int numPeopleServed = 0;
 	private boolean goingUp;
 	private ArrayList<Request> peopleOnElevatorList = new ArrayList<Request>();
+	
+	// Usage Statistics
+	private int numPeopleServed = 0;
+	private int numTimesGoneUp = 0;
+	private int numTimesGoneDown = 0;
 	
 	public Elevator(int startFloor, int numFloors)
 	{
@@ -48,10 +52,12 @@ public class Elevator {
 		if (goingUp)
 		{
 			moveUp();
+			numTimesGoneUp++;
 		}
 		else
 		{
 			moveDown();
+			numTimesGoneDown++;
 		}
 	}
 	
@@ -133,9 +139,15 @@ public class Elevator {
 	 */
 	public void displayUsageStatistics(int elevatorNumber)
 	{
+		System.out.println();
 		System.out.println("*****Elevator " + elevatorNumber + " Usage Statistics*****");
 		System.out.println("Passengers Served - " + numPeopleServed);
+		System.out.println("Has traveled upwards " + numTimesGoneUp + " floors");
+		System.out.println("Has traveled downwards " + numTimesGoneDown + " floors");
+		System.out.println("*************************************");
 	}
+	
+	
 	//Other Private Methods
 	/**
 	 * Increase the value of currentFloor to move up
@@ -185,4 +197,5 @@ public class Elevator {
 			}
 		}
 	}
+	
 }

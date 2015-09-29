@@ -13,13 +13,17 @@ public class Simulator {
 	/****************************************************************************** *
 	* Name: Aaron Brown
 	* Block: G
-	* Date: September 28, 2015
+	* Date: October 1, 2015
 	*
 	* Program #4B: Elevator Simulator
 	* Description:
 	* 	This program simulates the behavior of a number of elevators as they respond
 	* to different requests. At each time interval, people arrive at different
-	* floors, elevators move up or down by one floor, and loads or unloads.
+	* floors, elevators move up or down by one floor, and loads or unloads. The
+	* elevators will travel up until they reach the max floor, and then they will
+	* travel down until they reach the bottom floor. If two or more elevators are
+	* at the same floor, the elevator that was created first will pick up the
+	* passengers first.
 	* ******************************************************************************/
 	public static void main(String[] args) 
 	{
