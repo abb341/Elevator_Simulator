@@ -278,6 +278,7 @@ public class Simulator {
 		{
 			elevatorList.get(i).displayUsageStatistics(i);
 		}
+		
 	}
 
 }

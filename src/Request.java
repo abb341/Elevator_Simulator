@@ -1,4 +1,8 @@
-
+/**
+ * This class stores the information in each request
+ * @author abrown
+ *
+ */
 public class Request {
 	
 	private int time;
